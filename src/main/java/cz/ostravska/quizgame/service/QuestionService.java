@@ -6,6 +6,8 @@ import cz.ostravska.quizgame.model.UserAnswer;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -14,7 +16,7 @@ public class QuestionService {
     private final List<Question> questions = new ArrayList<>();
 
     public QuestionService() {
-        questions.add(new Question(1L, "V Africe žije 12 000 slonů", 12000));
+        questions.add(new Question(1L, "V Africe žije 12000 slonů", 12000));
         questions.add(new Question(2L, "V USA je 50 států", 50));
         questions.add(new Question(3L, "ČR má 10,7 milionu obyvatel", 10700000));
         questions.add(new Question(4L, "Mount Everest měří 8800 metrů", 8848));
@@ -69,17 +71,20 @@ public class QuestionService {
                 }
             }
         }
-
         return score;
     }
 
-    // Pomocná metoda: z textu vytáhne první smysluplné celé číslo
     private int extractNumberFromStatement(String statement) {
-        String digits = statement.replaceAll("[^0-9]", "");
-        try {
-            return Integer.parseInt(digits);
-        } catch (NumberFormatException e) {
-            return 0;
+        Matcher matcher = Pattern.compile("\\d+").matcher(statement);
+        int max = 0;
+
+        while (matcher.find()) {
+            int number = Integer.parseInt(matcher.group());
+            if (number > max) {
+                max = number;
+            }
         }
+
+        return max;
     }
 }

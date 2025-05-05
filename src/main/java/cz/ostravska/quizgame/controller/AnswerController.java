@@ -1,17 +1,25 @@
 package cz.ostravska.quizgame.controller;
 
+import cz.ostravska.quizgame.model.QuizResult;
 import cz.ostravska.quizgame.model.UserAnswer;
-import org.springframework.http.ResponseEntity;
+import cz.ostravska.quizgame.service.QuestionService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/answers")
+@RequestMapping("/quiz")
 public class AnswerController {
 
-    @PostMapping("/submit")
-    public ResponseEntity<String> submitAnswer(@RequestBody UserAnswer userAnswer) {
-        // Prozatím jen odpověz, že data byla přijata:
-        return ResponseEntity.ok("Odpověď přijata: " + userAnswer.getDirection());
+    private final QuestionService questionService;
 
+    public AnswerController(QuestionService questionService) {
+        this.questionService = questionService;
+    }
+
+    @PostMapping("/submit")
+    public QuizResult submitAnswers(@RequestBody List<UserAnswer> userAnswers) {
+        int correct = questionService.evaluateAnswers(userAnswers);
+        return new QuizResult(userAnswers.size(), correct);
     }
 }
