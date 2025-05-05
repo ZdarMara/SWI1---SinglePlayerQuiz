@@ -1,11 +1,9 @@
 package cz.ostravska.quizgame.controller;
 
 import cz.ostravska.quizgame.model.Question;
+import cz.ostravska.quizgame.model.UserAnswer;
 import cz.ostravska.quizgame.service.QuestionService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,4 +27,8 @@ public class QuestionController {
         return questionService.getRandomQuestions(count);
     }
 
+    @PostMapping("/quiz/submit")
+    public int submitAnswers(@RequestBody List<UserAnswer> userAnswers) {
+        return questionService.evaluateAnswers(userAnswers);
+    }
 }

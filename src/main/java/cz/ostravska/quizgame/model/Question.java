@@ -1,26 +1,20 @@
 package cz.ostravska.quizgame.model;
 
-import java.util.List;
-
 public class Question {
 
     private Long id;
-    private String text;
-    private List<String> options;
-    private int correctAnswerIndex;
+    private String statement; // Tvrzení
+    private int actualValue;  // Skutečná hodnota
 
     public Question() {
-        // prázdný konstruktor pro případné potřeby Springu
     }
 
-    public Question(Long id, String text, List<String> options, int correctAnswerIndex) {
+    public Question(Long id, String statement, int actualValue) {
         this.id = id;
-        this.text = text;
-        this.options = options;
-        this.correctAnswerIndex = correctAnswerIndex;
+        this.statement = statement;
+        this.actualValue = actualValue;
     }
 
-    // gettery a settery
     public Long getId() {
         return id;
     }
@@ -29,23 +23,19 @@ public class Question {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getStatement() {
+        return statement;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setStatement(String statement) {
+        this.statement = statement;
     }
 
-    public List<String> getOptions() {
-        return options;
+    public int getActualValue() {
+        return actualValue;
     }
 
-    public void setOptions(List<String> options) {
-        this.options = options;
-    }
-
-    public int getCorrectAnswerIndex() {
-        return correctAnswerIndex;
+    public void setActualValue(int actualValue) {
+        this.actualValue = actualValue;
     }
 }
