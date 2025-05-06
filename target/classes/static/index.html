@@ -4,36 +4,95 @@
     <meta charset="UTF-8">
     <title>Kvíz</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 2rem;
+        :root {
+            --primary: #2b6cb0;
+            --primary-light: #3182ce;
+            --background: #f7fafc;
+            --card: #ffffff;
+            --text: #2d3748;
+            --muted: #718096;
+            --border-radius: 12px;
         }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 2rem 2.5rem;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: var(--muted);
+        }
+
+        button {
+            margin: 0.5rem;
+            padding: 0.6rem 1.4rem;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-light);
+        }
+
         #question-section, #result-section {
             display: none;
         }
-        button {
-            margin: 0.5rem;
-            padding: 0.5rem 1rem;
+
+        .spacer {
+            margin-top: 2rem;
         }
     </style>
 </head>
 <body>
-<div id="intro-section">
-    <h1>Vítej v kvízu!</h1>
-    <p>Klikni na tlačítko a začni hádat 🧙‍♂️</p>
-    <button onclick="startQuiz()">Start</button>
+
+<div class="card" id="intro-section">
+    <h1>🧠 Vítej v kvízu!</h1>
+    <p>Klikni na tlačítko a začni hádat</p>
+    <div class="spacer">
+        <button onclick="startQuiz()">Start</button>
+    </div>
 </div>
 
-<div id="question-section">
+<div class="card" id="question-section">
     <h2 id="question-text"></h2>
-    <button onclick="submitAnswer('MORE')">Více</button>
-    <button onclick="submitAnswer('LESS')">Méně</button>
+    <div class="spacer">
+        <button onclick="submitAnswer('MORE')">Více</button>
+        <button onclick="submitAnswer('LESS')">Méně</button>
+    </div>
 </div>
 
-<div id="result-section">
+<div class="card" id="result-section">
     <h2>Výsledek</h2>
     <p id="score-text"></p>
-    <button onclick="location.reload()">Zkusit znovu</button>
+    <div class="spacer">
+        <button onclick="location.reload()">Zkusit znovu</button>
+    </div>
 </div>
 
 <script>
@@ -75,7 +134,7 @@
     }
 
     function finishQuiz() {
-        fetch("http://localhost:8080/quiz/submit", {  // ← TADY JE OPRAVA
+        fetch("http://localhost:8080/quiz/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(answers)
