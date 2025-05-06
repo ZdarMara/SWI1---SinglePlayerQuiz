@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Kvíz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+        }
+        #question-section, #result-section {
+            display: none;
+        }
+        button {
+            margin: 0.5rem;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+</head>
+<body>
+<div id="intro-section">
+    <h1>Vítej v kvízu!</h1>
+    <p>Klikni na tlačítko a začni hádat 🧙‍♂️</p>
+    <button onclick="startQuiz()">Start</button>
+</div>
+
+<div id="question-section">
+    <h2 id="question-text"></h2>
+    <button onclick="submitAnswer('MORE')">Více</button>
+    <button onclick="submitAnswer('LESS')">Méně</button>
+</div>
+
+<div id="result-section">
+    <h2>Výsledek</h2>
+    <p id="score-text"></p>
+    <button onclick="location.reload()">Zkusit znovu</button>
+</div>
+
+<script>
+    let questions = [];
+    let currentIndex = 0;
+    let answers = [];
+
+    function startQuiz() {
+        document.getElementById("intro-section").style.display = "none";
+        document.getElementById("question-section").style.display = "block";
+        fetchQuestions();
+    }
+
+    function fetchQuestions() {
+        fetch("http://localhost:8080/questions/quiz/start?count=10")
+            .then(res => res.json())
+            .then(data => {
+                questions = data;
+                showQuestion();
+            });
+    }
+
+    function showQuestion() {
+        if (currentIndex < questions.length) {
+            const q = questions[currentIndex];
+            document.getElementById("question-text").innerText = q.statement;
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function submitAnswer(direction) {
+        answers.push({
+            questionId: questions[currentIndex].id,
+            direction: direction
+        });
+        currentIndex++;
+        showQuestion();
+    }
+
+    function finishQuiz() {
+        fetch("http://localhost:8080/quiz/submit", {  // ← TADY JE OPRAVA
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(answers)
+        })
+            .then(res => res.json())
+            .then(result => {
+                document.getElementById("question-section").style.display = "none";
+                document.getElementById("result-section").style.display = "block";
+
+                const correct = result.correctAnswers ?? result.score ?? 0;
+                const total = result.totalQuestions ?? result.total ?? answers.length;
+
+                document.getElementById("score-text").innerText =
+                    `Správně zodpovězeno ${correct} z ${total} otázek.`;
+            });
+    }
+</script>
+</body>
+</html>
